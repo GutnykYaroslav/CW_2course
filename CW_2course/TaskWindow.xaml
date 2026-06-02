@@ -1,0 +1,56 @@
+﻿<Window x:Class="CW_2course.TaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CW_2course"
+        mc:Ignorable="d"
+        Title="TaskWindow" Height="450" Width="800">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Назва завдання:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBox x:Name="TitleTextBox" Height="25" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Дедлайн:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <DatePicker x:Name="DeadlinePicker" Height="25" Margin="0,0,0,15"/>
+
+            <Grid Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                    <TextBlock Text="Пріоритет:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="PriorityComboBox" Grid.Row="2" Margin="5" Height="30">
+                        <ComboBoxItem Content="Низький"/>
+                        <ComboBoxItem Content="Середній"/>
+                        <ComboBoxItem Content="Високий"/>
+                        <ComboBoxItem Content="Критичний"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                    <TextBlock Text="Складність:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="ComplexityComboBox" Grid.Row="3" Margin="5" Height="30">
+                        <ComboBoxItem Content="Легко (3 бали)"/>
+                        <ComboBoxItem Content="Нормально (5 балів)"/>
+                        <ComboBoxItem Content="Складно (10 балів)"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <CheckBox x:Name="IsCompletedCheckBox" Content="Позначити як виконане" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Скасувати" Click="Cancel_Click" Width="90" Height="30" Margin="0,0,10,0"/>
+            <Button Content="Зберегти" Click="Save_Click" Width="90" Height="30" Background="#10B981" Foreground="White" FontWeight="Bold"/>
+        </StackPanel>
+    </Grid>
+</Window>
