@@ -31,7 +31,7 @@ namespace CW_2course.Models
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public TaskPriority Priority { get; set; }
         public TaskComplexity Complexity { get; set; }
-        public bool IsCompleted { get; set; } // Залишили тільки ОДИН раз
+        public bool IsCompleted { get; set; } 
 
         public bool IsOverdue => !IsCompleted && Deadline < DateTime.Now;
 
