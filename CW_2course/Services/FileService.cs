@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,63 +12,42 @@ namespace CW_2course.Services
 {
     public static class FileService
     {
-        private static readonly string FilePath = "tasks.txt"; // або твій шлях до файлу
+       
+        private const string TasksFilePath = "tasks.json";
 
-        // БЕЗПЕЧНЕ ЗБЕРЕЖЕННЯ
-        public static void SaveTasks(List<TaskModel> tasks)
+        public static void SaveLists(List<TaskListModel> lists)
         {
-            if (tasks == null) return;
-
-            List<string> lines = new List<string>();
-            foreach (var t in tasks)
-            {
-                // ГОЛОВНИЙ ЗАХИСТ: якщо об'єкт завдання чомусь null, просто пропускаємо його і йдемо далі!
-                if (t == null) continue;
-
-                lines.Add($"{t.Title}|{t.Deadline:yyyy-MM-dd}|{t.Priority}|{t.Complexity}|{t.IsCompleted}");
-            }
-
-            File.WriteAllLines(FilePath, lines);
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(lists, options);
+            File.WriteAllText(TasksFilePath, json);
         }
 
-        // БЕЗПЕЧНЕ ЗАВАНТАЖЕННЯ
-        public static List<TaskModel> LoadTasks()
+        public static List<TaskListModel> LoadLists()
         {
-            List<TaskModel> list = new List<TaskModel>();
-            if (!File.Exists(FilePath)) return list;
+            if (!File.Exists(TasksFilePath)) return new List<TaskListModel>();
 
-            string[] lines = File.ReadAllLines(FilePath);
-            foreach (var line in lines)
-            {
-                // Пропускаємо повністю порожні рядки у файлі
-                if (string.IsNullOrWhiteSpace(line)) continue;
+            string json = File.ReadAllText(TasksFilePath);
+            var loadedLists = JsonSerializer.Deserialize<List<TaskListModel>>(json);
+            return loadedLists ?? new List<TaskListModel>();
+        }
 
-                var parts = line.Split('|');
-                if (parts.Length < 5) continue; // Якщо рядок пошкоджений — ігноруємо його
+        
+        private const string UsersFilePath = "users.json";
 
-                try
-                {
-                    var task = new TaskModel
-                    {
-                        Title = parts[0],
-                        Deadline = DateTime.Parse(parts[1]),
-                        Priority = (TaskPriority)Enum.Parse(typeof(TaskPriority), parts[2]),
-                        Complexity = (TaskComplexity)Enum.Parse(typeof(TaskComplexity), parts[3]),
-                        IsCompleted = bool.Parse(parts[4])
-                    };
+        public static void SaveUsers(List<UserModel> users)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(users, options);
+            File.WriteAllText(UsersFilePath, json);
+        }
 
-                    if (task != null)
-                    {
-                        list.Add(task);
-                    }
-                }
-                catch
-                {
-                    // Якщо якийсь один рядок записаний криво, додаток не впаде, а просто піде далі
-                    continue;
-                }
-            }
-            return list;
+        public static List<UserModel> LoadUsers()
+        {
+            if (!File.Exists(UsersFilePath)) return new List<UserModel>();
+
+            string json = File.ReadAllText(UsersFilePath);
+            var loadedUsers = JsonSerializer.Deserialize<List<UserModel>>(json);
+            return loadedUsers ?? new List<UserModel>();
         }
     }
 }

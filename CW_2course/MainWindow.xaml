@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CW_2course"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="1000">
     <Window.Resources>
+
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -40,44 +41,51 @@
     </Window.Resources>
 
     <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-            <TextBlock Text="📋" FontSize="28" Margin="0,0,10,0"/>
-            <TextBlock Text="Мої завдання" FontSize="24" FontWeight="Bold" Foreground="#1F2937" VerticalAlignment="Center"/>
-        </StackPanel>
 
-        <DataGrid x:Name="TasksList" Grid.Row="1" CanUserAddRows="False" Margin="0,0,0,20">
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="✓" Binding="{Binding IsCompleted}" Width="40">
-                    <DataGridCheckBoxColumn.ElementStyle>
-                        <Style TargetType="CheckBox">
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridCheckBoxColumn.ElementStyle>
-                </DataGridCheckBoxColumn>
 
-                <DataGridTextColumn Header="Назва завдання" Binding="{Binding Title}" Width="*"/>
-                <DataGridTextColumn Header="Дедлайн" Binding="{Binding Deadline, StringFormat=dd.MM.yyyy}" Width="100"/>
-                <DataGridTextColumn Header="Пріоритет" Binding="{Binding Priority}" Width="120"/>
-                <DataGridTextColumn Header="Складність" Binding="{Binding Complexity}" Width="130"/>
-            </DataGrid.Columns>
-        </DataGrid>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="➕ Додати" Click="AddTask_Click" Background="#10B981"/>
-            <Button Content="✏️ Редагувати" Click="EditTask_Click" Background="#F59E0B"/>
-            <Button Content="❌ Видалити" Click="DeleteTask_Click" Background="#EF4444"/>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <Border Width="1" Background="#D1D5DB" Margin="15,0"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                <TextBlock Text="📋" FontSize="28" Margin="0,0,10,0"/>
+                <TextBlock x:Name="CurrentListTitle" Text="Мої завдання" FontSize="24" FontWeight="Bold" Foreground="#1F2937" VerticalAlignment="Center"/>
+            </StackPanel>
 
-            <Button Content="💾 Зберегти" Click="SaveTasks_Click" Background="#3B82F6"/>
-            <Button Content="📄 Експорт PDF" Click="ExportPdf_Click" Background="#8B5CF6"/>
-        </StackPanel>
+            <DataGrid x:Name="TasksList" CanUserAddRows="False" Margin="0,52,0,20" Grid.RowSpan="2">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="✓" Binding="{Binding IsCompleted}" Width="40">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
+                    </DataGridCheckBoxColumn>
+
+                    <DataGridTextColumn Header="Назва завдання" Binding="{Binding Title}" Width="*"/>
+                    <DataGridTextColumn Header="Дедлайн" Binding="{Binding Deadline, StringFormat=dd.MM.yyyy}" Width="100"/>
+                    <DataGridTextColumn Header="Пріоритет" Binding="{Binding Priority}" Width="120"/>
+                    <DataGridTextColumn Header="Складність" Binding="{Binding ComplexityDisplay}" Width="150"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="➕ Додати" Click="AddTask_Click" Background="#10B981"/>
+                <Button Content="✏️ Редагувати" Click="EditTask_Click" Background="#F59E0B"/>
+                <Button Content="❌ Видалити" Click="DeleteTask_Click" Background="#EF4444"/>
+
+                <Border Width="1" Background="#D1D5DB" Margin="15,0"/>
+
+                <Button Content="💾 Зберегти" Click="SaveTasks_Click" Background="#3B82F6"/>
+                <Button Content="📄 Експорт PDF" Click="ExportToPdfButton_Click" Background="#8B5CF6"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

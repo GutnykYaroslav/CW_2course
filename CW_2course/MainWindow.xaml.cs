@@ -20,46 +20,99 @@ namespace CW_2course
 {
     public partial class MainWindow : Window
     {
-        public ObservableCollection<TaskModel> Tasks { get; set; }
+
+        public ObservableCollection<TaskModel> GlobalTasks { get; set; } = new ObservableCollection<TaskModel>();
+
+
+        public TaskListModel SelectedList { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+            TasksList.ItemsSource = GlobalTasks;
 
-            var loadedTasks = FileService.LoadTasks();
-            Tasks = new ObservableCollection<TaskModel>(loadedTasks);
-            TasksList.ItemsSource = Tasks;
+            var loadedLists = FileService.LoadLists();
+            if (loadedLists != null && loadedLists.Count > 0)
+            {
+              
+                GlobalTasks = loadedLists[0].Tasks;
+            }
+            else
+            {
+               
+                GlobalTasks = new ObservableCollection<TaskModel>();
+            }
+
+           
+            TasksList.ItemsSource = GlobalTasks;
+
+
+
         }
 
-        private void AddTask_Click(object sender, RoutedEventArgs e)
+        private bool _isDarkTheme = false;
+
+        
+
+       
+
+        private void ExportToPdfButton_Click(object sender, RoutedEventArgs e)
         {
-            var taskWindow = new TaskWindow();
-            if (taskWindow.ShowDialog() == true)
+
+            if (SelectedList == null)
             {
-                // Перевіряємо, що вікно повернуло не null завдання
-                if (taskWindow.CurrentTask != null)
+                MessageBox.Show("Оберіть список для експорту!", "Увага", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+            saveFileDialog.Filter = "PDF файл (*.pdf)|*.pdf";
+            saveFileDialog.FileName = $"Мої_Завдання_{SelectedList.Title}.pdf";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
                 {
-                    Tasks.Add(taskWindow.CurrentTask); // Додаємо на екран
-                    FileService.SaveTasks(Tasks.ToList()); // Одразу записуємо у файл без помилок!
+                    PdfExportService exporter = new PdfExportService();
+
+                    exporter.Export(SelectedList.Tasks, saveFileDialog.FileName);
+
+                    MessageBox.Show("PDF успішно збережено!", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Помилка: " + ex.Message);
                 }
             }
         }
+        private void SaveTasks_Click(object sender, RoutedEventArgs e)
+        {
 
+            var listsToSave = new List<TaskListModel>
+{
+    new TaskListModel { Title = "Головний список", Tasks = GlobalTasks }
+};
+            FileService.SaveLists(listsToSave);
+            MessageBox.Show("Всі списки успішно збережено!", "Збереження", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
         private void EditTask_Click(object sender, RoutedEventArgs e)
         {
-            // Увага: якщо підкреслює TasksList (CS0103) — заміни це слово на 
-            // актуальне ім'я твого ListBox або DataGrid із файлу MainWindow.xaml!
-            if (TasksList.SelectedItem is TaskModel selectedTask)
+            if (TasksList.SelectedItem is TaskModel selectedTask && SelectedList != null)
             {
-                // Якщо підкреслює цей рядок (CS1729) — це означає, що у твоєму TaskWindow 
-                // немає конструктора з параметром. Тоді міняй цей рядок на: new TaskWindow();
                 TaskWindow taskWindow = new TaskWindow(selectedTask);
                 if (taskWindow.ShowDialog() == true)
                 {
-                    int index = Tasks.IndexOf(selectedTask);
-                    Tasks[index] = taskWindow.CurrentTask;
+                    int index = SelectedList.Tasks.IndexOf(selectedTask);
+                    SelectedList.Tasks[index] = taskWindow.CurrentTask;
 
-                    FileService.SaveTasks(Tasks.ToList()); // ВИПРАВЛЕНО CS1503
+
+                    SelectedList.UpdateNearestDeadline();
+
+                    var listsToSave = new List<TaskListModel>
+                    {
+                    new TaskListModel { Title = "Головний список", Tasks = GlobalTasks }
+                    };
+                    FileService.SaveLists(listsToSave);
                 }
             }
             else
@@ -68,28 +121,48 @@ namespace CW_2course
             }
         }
 
-        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        private void AddTask_Click(object sender, RoutedEventArgs e)
         {
-            // Тут так само: заміни TasksList на ім'я свого списку з XAML
-            if (TasksList.SelectedItem is TaskModel selectedTask)
+
+           
+
+
+            var batchWindow = new BatchAddTaskWindow();
+
+           
+            if (batchWindow.ShowDialog() == true)
             {
-                Tasks.Remove(selectedTask);
-                FileService.SaveTasks(Tasks.ToList()); // ВИПРАВЛЕНО CS1503
+               
+                foreach (var task in batchWindow.DraftTasks)
+                {
+                    GlobalTasks.Add(task);
+                }
+
+
+                var listsToSave = new List<TaskListModel>
+                {
+                new TaskListModel { Title = "Головний список", Tasks = GlobalTasks }
+                };
+                FileService.SaveLists(listsToSave);
+
+
+                TasksList.Items.Refresh();
             }
         }
 
-        private void SaveTasks_Click(object sender, RoutedEventArgs e)
+
+        private void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
-            // Оскільки FileService потребує список (List), ми конвертуємо Tasks
-            FileService.SaveTasks(Tasks.ToList());
-            MessageBox.Show("Список завдань успішно збережено!", "Збереження", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (TasksList.SelectedItem is TaskModel selectedTask)
+            {
+                GlobalTasks.Remove(selectedTask);
+            }
+            else
+            {
+                MessageBox.Show("Оберіть завдання для видалення!", "Увага", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
-        private void ExportPdf_Click(object sender, RoutedEventArgs e)
-        {
-            // Створюємо екземпляр, бо метод не статичний, і конвертуємо в List
-            PdfExportService pdfService = new PdfExportService();
-            pdfService.ExportToPdf(Tasks.ToList());
-        }
+        
     }
 }

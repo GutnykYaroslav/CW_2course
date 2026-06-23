@@ -13,7 +13,7 @@ namespace CW_2course.Services
 {
     public class PdfExportService
     {
-        public void ExportToPdf(IEnumerable<TaskModel> tasks)
+        public void Export(IEnumerable<TaskModel> tasksToExport, string filePath)
         {
             PrintDialog printDialog = new PrintDialog();
             if (printDialog.ShowDialog() == true)
@@ -26,7 +26,7 @@ namespace CW_2course.Services
 
                 doc.Blocks.Add(new Paragraph(new Run("Звіт: Чек-ліст завдань")) { FontSize = 24, FontWeight = FontWeights.Bold, Margin = new Thickness(0, 0, 0, 20) });
 
-                foreach (var task in tasks)
+                foreach (var task in tasksToExport)
                 {
                     string status = task.IsCompleted ? "☑ ВИКОНАНО" : "☐ НЕ ВИКОНАНО";
                     string text = $"{status} | {task.Title}\nДедлайн: {task.Deadline:dd.MM.yyyy} | Пріоритет: {task.Priority} | Складність: {task.Complexity}";

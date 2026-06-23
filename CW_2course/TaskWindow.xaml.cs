@@ -22,18 +22,16 @@ namespace CW_2course
             public TaskModel ResultTask { get; private set; }
             public TaskModel CurrentTask { get; set; }
 
-        // 1. Конструктор за замовчуванням (для створення НОВОГО завдання)
+        
         public TaskWindow()
             {
                 InitializeComponent();
-               // PriorityComboBox.ItemsSource = Enum.GetValues(typeof(TaskPriority));
-               // ComplexityComboBox.ItemsSource = Enum.GetValues(typeof(TaskComplexity));
 
                 DeadlinePicker.SelectedDate = DateTime.Now;
                 ResultTask = new TaskModel();
             }
 
-            // 2. Конструктор з параметром (для РЕДАГУВАННЯ існуючого завдання)
+            
             public TaskWindow(TaskModel task) : this()
             {
                 if (task != null)
@@ -57,8 +55,8 @@ namespace CW_2course
 
             System.Enum.TryParse<CW_2course.Models.TaskPriority>(PriorityComboBox.Text, out var priority);
 
-            // 2. ПАРСИМО СКЛАДНІСТЬ (відрізаємо пробіл і бали, залишаємо тільки перше слово)
-            var complexity = CW_2course.Models.TaskComplexity.Середньо; // Нормально замість Середньо!
+            
+            var complexity = CW_2course.Models.TaskComplexity.Середньо; 
             if (!string.IsNullOrEmpty(ComplexityComboBox.Text))
             {
                 string cleanComplexity = ComplexityComboBox.Text.Split(' ')[0];
@@ -66,13 +64,13 @@ namespace CW_2course
             }
 
 
-            // 3. Створюємо об'єкт завдання
+           
             CurrentTask = new TaskModel
             {
                 Title = TitleTextBox.Text,
                 Deadline = DeadlinePicker.SelectedDate ?? DateTime.Now,
                 Priority = priority,
-                Complexity = complexity, // Сюди піде чисте значення (Легко, Нормально або Складно)
+                Complexity = complexity, 
                 IsCompleted = false
             };
 
