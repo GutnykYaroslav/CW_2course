@@ -37,7 +37,7 @@
 
                 <StackPanel Grid.Column="1" Margin="5,0,0,0">
                     <TextBlock Text="Складність:" FontWeight="Bold" Margin="0,0,0,5"/>
-                    <ComboBox x:Name="ComplexityComboBox" Grid.Row="3" Margin="5" Height="30">
+                    <ComboBox x:Name="DifficultyComboBox" Grid.Row="3" Margin="5" Height="30">
                         <ComboBoxItem Content="Легко (3 бали)"/>
                         <ComboBoxItem Content="Нормально (5 балів)"/>
                         <ComboBoxItem Content="Складно (10 балів)"/>

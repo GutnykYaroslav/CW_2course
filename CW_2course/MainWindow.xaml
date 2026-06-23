@@ -60,19 +60,21 @@
 
             <DataGrid x:Name="TasksList" CanUserAddRows="False" Margin="0,52,0,20" Grid.RowSpan="2">
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="✓" Binding="{Binding IsCompleted}" Width="40">
-                        <DataGridCheckBoxColumn.ElementStyle>
-                            <Style TargetType="CheckBox">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridCheckBoxColumn.ElementStyle>
-                    </DataGridCheckBoxColumn>
+                    <DataGridTemplateColumn Header="✓" Width="40">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsCompleted, UpdateSourceTrigger=PropertyChanged}" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Center"
+                      Click="TaskCheckBox_Click" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                     <DataGridTextColumn Header="Назва завдання" Binding="{Binding Title}" Width="*"/>
                     <DataGridTextColumn Header="Дедлайн" Binding="{Binding Deadline, StringFormat=dd.MM.yyyy}" Width="100"/>
                     <DataGridTextColumn Header="Пріоритет" Binding="{Binding Priority}" Width="120"/>
-                    <DataGridTextColumn Header="Складність" Binding="{Binding ComplexityDisplay}" Width="150"/>
+                    <DataGridTextColumn Header="Складність" Binding="{Binding Difficulty}" Width="150"/>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -83,8 +85,8 @@
 
                 <Border Width="1" Background="#D1D5DB" Margin="15,0"/>
 
-                <Button Content="💾 Зберегти" Click="SaveTasks_Click" Background="#3B82F6"/>
-                <Button Content="📄 Експорт PDF" Click="ExportToPdfButton_Click" Background="#8B5CF6"/>
+               
+               
             </StackPanel>
         </Grid>
     </Grid>

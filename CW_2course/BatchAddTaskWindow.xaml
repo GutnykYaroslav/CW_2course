@@ -36,15 +36,16 @@
                     <ComboBoxItem Content="Низький"/>
                     <ComboBoxItem Content="Середній"/>
                     <ComboBoxItem Content="Високий"/>
+                    <ComboBoxItem Content="Критичний"/>
                 </ComboBox>
             </StackPanel>
 
             <StackPanel Grid.Column="2">
                 <TextBlock Text="Складність:" FontWeight="Bold" Margin="0,0,0,5"/>
-                <ComboBox x:Name="ComplexityInput" SelectedIndex="0" Padding="5">
+                <ComboBox x:Name="DifficultyInput" SelectedIndex="0" Padding="5">
                     <ComboBoxItem Content="Легко (3 балів)"/>
-                    <ComboBoxItem Content="Середньо (5 балів)"/>
-                    <ComboBoxItem Content="Складно (8 балів)"/>
+                    <ComboBoxItem Content="Нормально (5 балів)"/>
+                    <ComboBoxItem Content="Складно (10 балів)"/>
                 </ComboBox>
             </StackPanel>
         </Grid>

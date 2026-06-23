@@ -44,9 +44,11 @@ namespace CW_2course
 
             if (user != null)
             {
+
+                MainMenuWindow mainMenu = new MainMenuWindow();
+                mainMenu.Show();
+
                 
-                MainWindow mainWindow = new MainWindow();
-                mainWindow.Show();
                 this.Close();
             }
             else

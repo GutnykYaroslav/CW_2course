@@ -16,34 +16,55 @@ using System.Windows.Shapes;
 
 namespace CW_2course
 {
-
     public partial class TaskWindow : Window
     {
-            public TaskModel ResultTask { get; private set; }
-            public TaskModel CurrentTask { get; set; }
+        public TaskModel ResultTask { get; private set; }
+        public TaskModel CurrentTask { get; set; }
 
-        
         public TaskWindow()
-            {
-                InitializeComponent();
+        {
+            InitializeComponent();
+            DeadlinePicker.SelectedDate = DateTime.Now;
+            ResultTask = new TaskModel();
+        }
 
-                DeadlinePicker.SelectedDate = DateTime.Now;
-                ResultTask = new TaskModel();
-            }
-
-            
-            public TaskWindow(TaskModel task) : this()
+        public TaskWindow(TaskModel task) : this()
+        {
+            if (task != null)
             {
-                if (task != null)
+                ResultTask = task;
+                TitleTextBox.Text = task.Title;
+                DeadlinePicker.SelectedDate = task.Deadline;
+                PriorityComboBox.SelectedItem = task.Priority;
+                IsCompletedCheckBox.IsChecked = task.IsCompleted;
+
+               
+                this.Loaded += (s, e) =>
                 {
-                    ResultTask = task;
-                    TitleTextBox.Text = task.Title;
-                    DeadlinePicker.SelectedDate = task.Deadline;
-                    PriorityComboBox.SelectedItem = task.Priority;
-                    ComplexityComboBox.SelectedItem = task.Complexity;
-                    IsCompletedCheckBox.IsChecked = task.IsCompleted;
+                    DifficultyComboBox.SelectedIndex = -1;
+                    DifficultyComboBox.SelectedItem = null;
+                    DifficultyComboBox.Text = string.Empty;
+                };
+
+                if (!string.IsNullOrEmpty(task.Difficulty))
+                {
+                    foreach (ComboBoxItem item in DifficultyComboBox.Items)
+                    {
+                        if (item.Content != null && item.Content.ToString() == task.Difficulty)
+                        {
+                            DifficultyComboBox.SelectedItem = item;
+                            break;
+                        }
+                    }
+
+                   
+                    if (DifficultyComboBox.SelectedItem == null)
+                    {
+                        DifficultyComboBox.Text = task.Difficulty;
+                    }
                 }
             }
+        }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
@@ -55,32 +76,33 @@ namespace CW_2course
 
             System.Enum.TryParse<CW_2course.Models.TaskPriority>(PriorityComboBox.Text, out var priority);
 
-            
-            var complexity = CW_2course.Models.TaskComplexity.Середньо; 
-            if (!string.IsNullOrEmpty(ComplexityComboBox.Text))
+           
+            string selectedDifficulty = "Нормально (5 балів)"; 
+            if (DifficultyComboBox.SelectedItem is ComboBoxItem selectedItem && selectedItem.Content != null)
             {
-                string cleanComplexity = ComplexityComboBox.Text.Split(' ')[0];
-                System.Enum.TryParse<CW_2course.Models.TaskComplexity>(cleanComplexity, out complexity);
+                selectedDifficulty = selectedItem.Content.ToString();
+            }
+            else if (!string.IsNullOrEmpty(DifficultyComboBox.Text))
+            {
+                selectedDifficulty = DifficultyComboBox.Text;
             }
 
-
-           
             CurrentTask = new TaskModel
             {
                 Title = TitleTextBox.Text,
                 Deadline = DeadlinePicker.SelectedDate ?? DateTime.Now,
                 Priority = priority,
-                Complexity = complexity, 
-                IsCompleted = false
+                Difficulty = selectedDifficulty, 
+                IsCompleted = IsCompletedCheckBox.IsChecked ?? false
             };
 
             this.DialogResult = true;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
-            {
-                DialogResult = false;
-                Close();
-            }
+        {
+            DialogResult = false;
+            Close();
         }
     }
+}

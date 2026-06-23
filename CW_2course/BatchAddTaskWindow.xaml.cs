@@ -15,10 +15,8 @@ using System.Windows.Shapes;
 
 namespace CW_2course
 {
-
     public partial class BatchAddTaskWindow : Window
     {
-        // Тимчасовий список для зберігання завдань
         public List<TaskModel> DraftTasks { get; private set; } = new List<TaskModel>();
 
         public BatchAddTaskWindow()
@@ -40,20 +38,34 @@ namespace CW_2course
                 return;
             }
 
+           
+            TaskPriority selectedPriority = PriorityInput.SelectedIndex >= 0
+                ? (TaskPriority)PriorityInput.SelectedIndex
+                : default(TaskPriority);
+
+           
+            string selectedDifficultyText = (DifficultyInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Нормально (5 балів)";
+
+
             var newTask = new TaskModel
             {
                 Title = TitleInput.Text,
                 Description = DescInput.Text,
-                Deadline = DateTime.Now.AddDays(1) // Дедлайн за замовчуванням на завтра
+                Deadline = DateTime.Now.AddDays(1),
+                Priority = selectedPriority,
+                Difficulty = selectedDifficultyText
             };
 
             DraftTasks.Add(newTask);
-            DraftListBox.Items.Add($"• {newTask.Title}");
+
+            DraftListBox.Items.Add($"• {newTask.Title} [Пріоритет: {selectedPriority} | Складність: {selectedDifficultyText}]");
 
             DraftCountLabel.Text = $"В черзі: {DraftTasks.Count} / 5";
 
             TitleInput.Clear();
             DescInput.Clear();
+            PriorityInput.SelectedIndex = 0;
+            DifficultyInput.SelectedIndex = 0;
 
             if (DraftTasks.Count == 5)
             {
